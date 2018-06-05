@@ -1,0 +1,80 @@
+debug = true
+checkNewVersion = true
+logLevel = "INFO"
+InsecureSkipVerify = true
+
+defaultEntryPoints = ["http", "https"]
+[web]
+address = ":8080"
+  [web.auth.basic]
+  users = ["admin:$apr1$RlVd7odD$3CIkrrVPQ2GppKjTg0vcw0"]
+
+
+
+[entryPoints]
+  [entryPoints.http]
+  address = ":80"
+    [entryPoints.http.redirect]
+      entryPoint = "https"
+  [entryPoints.https]
+  address = ":443"
+    [entryPoints.https.tls]
+      #minVersion = "VersionTLS12"
+      #cipherSuites = [
+      #  "TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256",
+      #  "TLS_RSA_WITH_AES_256_GCM_SHA384"
+      #]
+      [[entryPoints.https.tls.certificates]]
+      certFile = "/home/user/traefik/ssl/lekh_net.crt"
+      keyFile = "/home/user/traefik/ssl/server.key"
+      [[entryPoints.https.tls.certificates]]
+      certFile = "/home/user/traefik/ssl/vlekh.net.crt"
+      keyFile = "/home/user/traefik/ssl/vlekh.net.key"
+
+[frontends]
+  [frontend.wp_f]
+  backend = "wp_b"
+  passHostHeader = true
+    [frontend.wp_f.routes.wp_backend]
+    rule = "Host:wp_f.example.com"
+
+[backends]
+  [backend.wp_b]
+    [backend.wp_b.servers.wp_service]
+    url = "http://wp_service"
+   
+[metrics]
+  # To enable Traefik to export internal metrics to Prometheus
+  [metrics.prometheus]
+
+    # Name of the related entry point
+    #
+    # Optional
+    # Default: "traefik"
+    #
+    entryPoint = "traefik"
+
+    # Buckets for latency metrics
+    #
+    # Optional
+    # Default: [0.1, 0.3, 1.2, 5]
+    #
+    buckets = [0.1,0.3,1.2,5.0]
+
+[docker]
+domain = "example.com"
+watch = true
+# This will hide all docker containers that don't have explicitly  
+# set label to "enable"
+exposedbydefault = false
+
+#
+##[acme]
+##email = "gaurav@example.com"
+##storage = "acme.json"
+##entryPoint = "https"
+##onHostRule = true
+##onDemand = false
+##
+##[acme.httpChallenge]
+##  entryPoint = "http"

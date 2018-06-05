@@ -1,0 +1,33 @@
+version: '3.5'
+services:
+
+  traefik:
+    image: traefik:latest
+    command: --logLevel=DEBUG --web --web.metrics.prometheus --web.metrics.prometheus.buckets="0.1,0.3,1.2,5.0" --docker --docker.swarmmode --docker.domain=lekh.net --docker.domain=vlekh.net --docker.watch --api
+    deploy:
+      placement:
+        constraints:
+          - "node.role == manager"
+      labels:
+        - traefik.enable=true
+        - traefik.frontend.passHostHeader=true
+        - traefik.frontend.rule=Host:traefik.vlekh.net
+        - traefik.backend=traefik
+        - traefik.docker.network=traefik
+        - traefik.entryPoint=https
+        - traefik.port=8080
+    ports:
+      - 8080:8080
+      - 443:443
+      - 80:80
+    networks:
+      - traefik
+    volumes:
+      - /var/run/docker.sock:/var/run/docker.sock
+      - /gfs_mount/dswarm_services/TRAFIK/traefik.toml:/etc/traefik/traefik.toml
+      - /gfs_mount/dswarm_services/TRAFIK/CERTS:/home/user/traefik/ssl
+
+networks:
+  traefik:
+    external: true
+    name: traefik
