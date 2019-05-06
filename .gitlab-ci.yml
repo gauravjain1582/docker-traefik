@@ -19,4 +19,4 @@ stages:
 deploy-prod:
   stage: deploy
   script:
-    - docker stack deploy -c docker-compose.yml traefik
+    - docker -H tcp://192.168.1.176:2375 stack deploy -c docker-compose.yml traefik
