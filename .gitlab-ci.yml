@@ -4,6 +4,12 @@ before_script:
   #- docker -H tcp://192.168.1.176:2375 info
   - docker login -u gitlab-ci-token -p $CI_JOB_TOKEN $CI_REGISTRY
 
+variables:
+  DOCKER_DRIVER: overlay2
+  DOCKER_HOST: tcp://localhost:2375
+
+services:
+- docker:dind
 
 stages:
 #  - build
@@ -18,5 +24,6 @@ stages:
 
 deploy-prod:
   stage: deploy
+  image: docker:stable
   script:
     - docker -H tcp://192.168.1.176:2375 stack deploy -c docker-compose.yml traefik
