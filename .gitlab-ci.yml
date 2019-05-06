@@ -1,0 +1,22 @@
+image: docker:stable
+
+before_script:
+  #- docker -H tcp://192.168.1.176:2375 info
+  - docker login -u gitlab-ci-token -p $CI_JOB_TOKEN $CI_REGISTRY
+
+
+stages:
+#  - build
+  - deploy
+
+#build-prod:
+#  stage: build
+#  script:
+#    - docker-compose build
+#  only:
+#    - master
+
+deploy-prod:
+  stage: deploy
+  script:
+    - docker stack deploy -c docker-compose.yml traefik
