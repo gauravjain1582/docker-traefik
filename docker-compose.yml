@@ -1,13 +1,19 @@
-version: '3.5'
+version: '3.6'
 services:
 
   traefik:
     image: traefik:latest
     command: --logLevel=DEBUG --web --web.metrics.prometheus --web.metrics.prometheus.buckets="0.1,0.3,1.2,5.0" --docker --docker.swarmmode --docker.domain=lekh.net --docker.domain=vlekh.net --docker.watch --api
     deploy:
+      mode: global
       placement:
         constraints:
           - "node.role == manager"
+      update_config:
+        parallelism: 1
+        delay: 10s
+      restart_policy:
+        condition: on-failure
       labels:
         - traefik.enable=true
         - traefik.frontend.passHostHeader=true
@@ -24,10 +30,34 @@ services:
       - traefik
     volumes:
       - /var/run/docker.sock:/var/run/docker.sock
-      - /gfs_mount/dswarm_services/TRAFIK/traefik.toml:/etc/traefik/traefik.toml
-      - /gfs_mount/dswarm_services/TRAFIK/CERTS:/home/user/traefik/ssl
+    configs: 
+      - source: traefik_config
+        target: /etc/traefik/traefik.toml
+    secrets:
+      - source: traefik_lekh_cert
+        target: /home/user/traefik/ssl/lekh_net.crt
+      - source: traefik_lekh_key
+        target: /home/user/traefik/ssl/server.key
+      - source: traefik_vlekh_cert
+        target: /home/user/traefik/ssl/vlekh.net.crt
+      - source: traefik_vlekh_key
+        target: /home/user/traefik/ssl/vlekh.net.key
 
 networks:
   traefik:
     external: true
     name: traefik
+
+configs:
+  traefik_config:
+    file: traefik.toml
+
+secrets:
+  traefik_lekh_cert:
+    file: CERTS/lekh_net.crt
+  traefik_lekh_key:
+    file: CERTS/server.key
+  traefik_vlekh_cert:
+    file: CERTS/vlekh.net.crt
+  traefik_vlekh_key:
+    file: CERTS/vlekh.net.key
