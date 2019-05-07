@@ -34,13 +34,13 @@ services:
       - source: traefik_config
         target: /etc/traefik/traefik.toml
     secrets:
-      - source: traefik_lekh_cert
+      - source: traefik_traefik_lekh_cert
         target: /home/user/traefik/ssl/lekh_net.crt
-      - source: traefik_lekh_key
+      - source: traefik_traefik_lekh_key
         target: /home/user/traefik/ssl/server.key
-      - source: traefik_vlekh_cert
+      - source: traefik_traefik_vlekh_cert
         target: /home/user/traefik/ssl/vlekh.net.crt
-      - source: traefik_vlekh_key
+      - source: tefik_traefik_vlekh_key
         target: /home/user/traefik/ssl/vlekh.net.key
 
 networks:
@@ -53,11 +53,11 @@ configs:
     file: traefik.toml
 
 secrets:
-  traefik_lekh_cert:
+  traefik_traefik_lekh_cert:
     external: true
-  traefik_lekh_key:
+  traefik_traefik_lekh_key:
     external: true
-  traefik_vlekh_cert:
+  traefik_traefik_vlekh_cert:
     external: true
-  traefik_vlekh_key:
+  traefik_traefik_vlekh_key:
     external: true
