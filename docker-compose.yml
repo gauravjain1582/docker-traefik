@@ -54,10 +54,10 @@ configs:
 
 secrets:
   traefik_lekh_cert:
-    file: CERTS/lekh_net.crt
+    external: true
   traefik_lekh_key:
-    file: CERTS/server.key
+    external: true
   traefik_vlekh_cert:
-    file: CERTS/vlekh.net.crt
+    external: true
   traefik_vlekh_key:
-    file: CERTS/vlekh.net.key
+    external: true
