@@ -40,7 +40,7 @@ services:
         target: /home/user/traefik/ssl/server.key
       - source: traefik_traefik_vlekh_cert
         target: /home/user/traefik/ssl/vlekh.net.crt
-      - source: tefik_traefik_vlekh_key
+      - source: traefik_traefik_vlekh_key
         target: /home/user/traefik/ssl/vlekh.net.key
 
 networks:
